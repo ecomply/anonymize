@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Anonymizer</title>
+</head>
+<body>
+    <h1>Upload a File to Anonymize</h1>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" name="file" accept=".pdf,.docx" required>
+        <button type="submit">Upload</button>
+    </form>
+    <p id="status"></p>
+    <a id="downloadLink" style="display:none;">Download Anonymized File</a>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('status').textContent = 'Uploading...';
+
+            const response = await fetch('/uploadfile/', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = data.anonymized_file;
+                downloadLink.textContent = 'Download Anonymized File';
+                downloadLink.style.display = 'block';
+                document.getElementById('status').textContent = 'File anonymized successfully!';
+            } else {
+                document.getElementById('status').textContent = 'Failed to anonymize file.';
+            }
+        });
+    </script>
+</body>
+</html>
