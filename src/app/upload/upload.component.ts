@@ -86,13 +86,30 @@ export class UploadComponent {
   }
   downloadAnonymizedFile(): void {
     if (this.anonymizationResult) {
-      const blob = new Blob([this.anonymizationResult], { type: 'text/plain' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'anonymized_output.txt';
-      a.click();
-      window.URL.revokeObjectURL(url);
+      // For direct text download from the component
+      if (typeof this.anonymizationResult === 'string') {
+        const blob = new Blob([this.anonymizationResult], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'anonymized_output.txt';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } 
+      // For downloading the file processed by the backend
+      else if (this.anonymizationResult.fileId) {
+        this.apiService.downloadAnonymizedFile(this.anonymizationResult.fileId)
+          .subscribe(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = this.anonymizationResult.fileName || 'anonymized_document';
+            a.click();
+            window.URL.revokeObjectURL(url);
+          }, error => {
+            console.error('Failed to download file:', error);
+          });
+      }
     } else {
       console.error('No anonymized file available for download');
     }
