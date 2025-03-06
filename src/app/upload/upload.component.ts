@@ -43,10 +43,16 @@ export class UploadComponent {
 
       this.apiService.uploadFileOrUrl(formData).subscribe(
         (response) => {
-          console.log('Upload successful:', response);
+          if (response.type === 'analysis') {
+            console.log('Document Analysis Result:', response.data);
+          } else if (response.type === 'anonymization') {
+            console.log('Document Anonymization Result:', response.data);
+          } else {
+            console.log('Unknown response type:', response);
+          }
         },
         (error) => {
-          console.error('Upload failed:', error);
+          console.error('Operation failed:', error);
         }
       );
     } else {
