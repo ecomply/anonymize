@@ -92,6 +92,8 @@
     }
   },
   "cli": {
-    "defaultProject": "ecomply-anonymize"
+    "cli": {
+      "defaultProject": "ecomply-anonymize"
+    }
   }
 }
