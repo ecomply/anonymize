@@ -11,22 +11,11 @@
       />
     </div>
 
-    <div class="form-group">
-      <label for="urlInput">Enter URL:</label>
-      <input 
-        type="text" 
-        id="urlInput" 
-        class="form-control" 
-        placeholder="https://example.com" 
-        formControlName="url" 
-      />
-    </div>
-
     <button 
       type="submit" 
       class="btn btn-primary" 
       [disabled]="!uploadForm.valid">
-      Analyze Document
+      Upload and Analyze File
     </button>
     <button 
       type="button" 

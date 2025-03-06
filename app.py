@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 # Initialize the Hugging Face pipelines
 qa_pipeline = pipeline("question-answering")
-anonymization_pipeline = pipeline("text2text-generation", model=hf_hub_download(repo_id="ai4privacy/llama-ai4privacy-multilingual-anonymiser-openpii", filename="pytorch_model.bin"))
+anonymization_pipeline = pipeline("ner", model="dslim/bert-base-NER")
 language_model = fasttext.load_model("lid.176.bin")
 
 def extract_text_from_pdf(file_path):
@@ -30,15 +30,7 @@ def extract_text_from_docx(file_path):
     def extract_text_from_docx(file_path):
         """Extract text from a DOCX file."""
         doc = docx.Document(file_path)
-        return "\n".join([paragraph.text for paragraph in doc.paragraphs])
-
-def extract_text_from_url(url):
-    """Extract text from a webpage given its URL."""
-    response = requests.get(url)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, 'html.parser')
-    return soup.get_text()
-
+        return "\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     # Use the initialized anonymization_pipeline
@@ -46,19 +38,14 @@ def anonymize_text(text):
     return anonymized_text
 
 def anonymize_pdf(input_path, output_path):
-    reader = PyPDF2.PdfFileReader(input_path)
-    writer = PyPDF2.PdfFileWriter()
-
-    for i in range(reader.getNumPages()):
-        page = reader.getPage(i)
-        page_content = page.extract_text()
-        anonymized_content = anonymize_text(page_content)
-        # Note: PyPDF2 does not support writing text back to pages directly
-        # This is a simplified example, you may need to use a different library for full functionality
-        writer.add_page(page)
-
-    with open(output_path, 'wb') as output_file:
-        writer.write(output_file)
+    with fitz.open(input_path) as pdf:
+        doc = fitz.open()  # Create a new PDF document
+        for page in pdf:
+            page_content = page.get_text()
+            anonymized_content = anonymize_text(page_content)
+            new_page = doc.new_page(width=page.rect.width, height=page.rect.height)
+            new_page.insert_text((72, 72), anonymized_content)  # Insert text at a fixed position
+        doc.save(output_path)
 
 def anonymize_docx(input_path, output_path):
     doc = Document(input_path)
@@ -68,9 +55,9 @@ def anonymize_docx(input_path, output_path):
 
 @app.route('/answer', methods=['POST'])
 def answer():
-    """Handle file or URL input and return extracted answers."""
-    if 'file' not in request.files and 'url' not in request.form:
-        return jsonify({"error": "No file or URL provided"}), 400
+    """Handle file input and return extracted answers."""
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
 
     text = ""
     try:
@@ -93,11 +80,6 @@ def answer():
 
             os.remove(file_path)
 
-        # Handle URL input
-        elif 'url' in request.form:
-            url = request.form['url']
-            text = extract_text_from_url(url)
-
         if not text.strip():
             return jsonify({"error": "No text could be extracted"}), 400
 
@@ -117,9 +99,9 @@ def answer():
 
 @app.route('/anonymize', methods=['POST'])
 def anonymize():
-    """Handle file or URL input and return anonymized text."""
-    if 'file' not in request.files and 'url' not in request.form:
-        return jsonify({"error": "No file or URL provided"}), 400
+    """Handle file input and return anonymized text."""
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
 
     text = ""
     try:
@@ -155,7 +137,10 @@ def anonymize():
                     para.text = anonymize_text(para.text)
                 doc.save(output_path)
         else:
-            return "Unsupported file type", 400
+            return jsonify({"error": "Unsupported file type"}), 400
+
+        if not text.strip():
+            return jsonify({"error": "No text could be extracted"}), 400
 
         return send_file(output_path, as_attachment=True)
 
