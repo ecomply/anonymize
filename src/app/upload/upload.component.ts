@@ -5,9 +5,7 @@ import { ApiService } from '../api.service';
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.css'],,
-  standalone: true,
-  imports: [ReactiveFormsModule]
+  styleUrls: ['./upload.component.css'],
   standalone: true,
   imports: [ReactiveFormsModule]
 })
