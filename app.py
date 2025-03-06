@@ -11,10 +11,9 @@ import tempfile
 
 app = Flask(__name__)
 
-
 # Initialize the Hugging Face pipelines
 qa_pipeline = pipeline("question-answering")
-anonymization_pipeline = pipeline("text2text-generation", model=hf_hub_download(repo_id="ai4privacy/llama-ai4privacy-multilingual-anonymiser-openpii", filename="pytorch_model.bin"))
+anonymization_pipeline = pipeline("text-generation", model="Viniciusplo/Qwen2.5-3B-Instruct-lora-anonymizer")
 language_model = fasttext.load_model("lid.176.bin")
 
 def extract_text_from_pdf(file_path):
