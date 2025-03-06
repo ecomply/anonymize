@@ -50,11 +50,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ecomply-anonymize:build"
+            "buildTarget": "ecomply-anonymize:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ecomply-anonymize:build:production"
+              "buildTarget": "ecomply-anonymize:build:production"
             }
           }
         },
@@ -91,5 +91,8 @@
       }
     }
   },
-  "defaultProject": "ecomply-anonymize"
+  "cli": {
+    "defaultProject": "ecomply-anonymize"
+  }
+  }
 }

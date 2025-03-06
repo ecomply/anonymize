@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "scripts": {
+      "ng": "ng",
+      "start": "npx ng serve",
+      "build": "ng build",
+      "test": "ng test",
+      "lint": "ng lint",
+      "e2e": "ng e2e",
+      "dev": "pip install -r requirements.txt && concurrently \"npx ng serve\" \"python3 app.py\""
+    },
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "dev": "concurrently \"ng serve\" \"python3 app.py\""
+    "dev": "pip install -r requirements.txt && concurrently \"npx ng serve\" \"python3 app.py\""
   },
   "private": true,
   "dependencies": {
@@ -24,5 +32,19 @@
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
     "zone.js": "^0.15.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^19.2.1",
+    "@angular/cli": "^19.2.1",
+    "@angular/compiler-cli": "^19.2.1",
+    "@types/jasmine": "^5.1.7",
+    "@types/node": "^22.13.9",
+    "jasmine-core": "^5.6.0",
+    "karma": "^6.4.4",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-coverage": "^2.2.1",
+    "karma-jasmine": "^5.1.0",
+    "karma-jasmine-html-reporter": "^2.1.0",
+    "typescript": "^5.8.2"
   }
 }
