@@ -53,21 +53,4 @@
       </button>
     </div>
   </div>
-  <div class="results-container">
-    <h3>Results:</h3>
-    <div *ngIf="analysisResult" class="result-display">
-      <h4>Analysis:</h4>
-      <p>{{ analysisResult }}</p>
-    </div>
-    <div *ngIf="anonymizationResult" class="result-display">
-      <h4>Anonymization:</h4>
-      <p>{{ anonymizationResult }}</p>
-      <button 
-        type="button" 
-        class="btn btn-success" 
-        (click)="downloadAnonymizedFile()">
-        Download Anonymized File
-      </button>
-    </div>
-  </div>
 </div>
