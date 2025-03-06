@@ -27,7 +27,10 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = docx.Document(file_path)
-    return "\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    def extract_text_from_docx(file_path):
+        """Extract text from a DOCX file."""
+        doc = docx.Document(file_path)
+        return "\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def extract_text_from_url(url):
     """Extract text from a webpage given its URL."""
