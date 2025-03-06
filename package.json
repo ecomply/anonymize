@@ -1,8 +1,7 @@
 {
   "name": "ecomply-anonymize",
   "version": "1.0.0",
-  "scripts": {
-    "ng": "ng",
+
     "scripts": {
       "ng": "ng",
       "start": "npx ng serve",
@@ -12,12 +11,7 @@
       "e2e": "ng e2e",
       "dev": "pip install -r requirements.txt && concurrently \"npx ng serve\" \"python3 app.py\""
     },
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "dev": "pip install -r requirements.txt && concurrently \"npx ng serve\" \"python3 app.py\""
-  },
+   
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.2.1",
