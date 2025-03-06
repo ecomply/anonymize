@@ -14,7 +14,7 @@ export class UploadComponent {
   uploadForm: FormGroup;
   fileToUpload: File | null = null;
   analysisResult: string | null = null;
-  anonymizationResult: string | null = null;
+  anonymizationResult: string | { fileId: string; fileName?: string } | null = null;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.uploadForm = this.fb.group({
@@ -64,8 +64,8 @@ export class UploadComponent {
 
       this.apiService.anonymizeDocument(formData).subscribe(
         (response) => {
-          this.anonymizationResult = response.anonymized_text;
-          console.log('Document Anonymization Result:', response.anonymized_text);
+          this.anonymizationResult = response.anonymized_text || { fileId: response.fileId, fileName: response.fileName };
+          console.log('Document Anonymization Result:', this.anonymizationResult);
         },
         (error) => {
           console.error('Anonymization failed:', error);
