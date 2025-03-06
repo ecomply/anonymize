@@ -39,7 +39,7 @@ export class UploadComponent {
       }
 
 
-      this.apiService.uploadFileOrUrl(formData).subscribe(
+      this.apiService.uploadFile(formData).subscribe(
         (response) => {
           this.analysisResult = response.data;
           console.log('Document Analysis Result:', response.data);
