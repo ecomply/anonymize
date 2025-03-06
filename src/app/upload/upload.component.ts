@@ -19,7 +19,6 @@ export class UploadComponent {
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.uploadForm = this.fb.group({
       file: [null],
-      url: ['', Validators.pattern('https?://.+')]
     });
   }
 
@@ -39,10 +38,6 @@ export class UploadComponent {
         formData.append('file', this.fileToUpload);
       }
 
-      const url = this.uploadForm.get('url')?.value;
-      if (url) {
-        formData.append('url', url);
-      }
 
       this.apiService.uploadFileOrUrl(formData).subscribe(
         (response) => {
@@ -66,10 +61,6 @@ export class UploadComponent {
         formData.append('file', this.fileToUpload);
       }
 
-      const url = this.uploadForm.get('url')?.value;
-      if (url) {
-        formData.append('url', url);
-      }
 
       this.apiService.anonymizeDocument(formData).subscribe(
         (response) => {
@@ -115,8 +106,3 @@ export class UploadComponent {
     }
   }
 }
-
-
-
-
-

@@ -30,15 +30,7 @@ def extract_text_from_docx(file_path):
     def extract_text_from_docx(file_path):
         """Extract text from a DOCX file."""
         doc = docx.Document(file_path)
-        return "\n".join([paragraph.text for paragraph in doc.paragraphs])
-
-def extract_text_from_url(url):
-    """Extract text from a webpage given its URL."""
-    response = requests.get(url)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, 'html.parser')
-    return soup.get_text()
-
+        return "\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     # Use the initialized anonymization_pipeline
@@ -68,9 +60,9 @@ def anonymize_docx(input_path, output_path):
 
 @app.route('/answer', methods=['POST'])
 def answer():
-    """Handle file or URL input and return extracted answers."""
-    if 'file' not in request.files and 'url' not in request.form:
-        return jsonify({"error": "No file or URL provided"}), 400
+    """Handle file input and return extracted answers."""
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
 
     text = ""
     try:
@@ -93,11 +85,6 @@ def answer():
 
             os.remove(file_path)
 
-        # Handle URL input
-        elif 'url' in request.form:
-            url = request.form['url']
-            text = extract_text_from_url(url)
-
         if not text.strip():
             return jsonify({"error": "No text could be extracted"}), 400
 
@@ -117,9 +104,9 @@ def answer():
 
 @app.route('/anonymize', methods=['POST'])
 def anonymize():
-    """Handle file or URL input and return anonymized text."""
-    if 'file' not in request.files and 'url' not in request.form:
-        return jsonify({"error": "No file or URL provided"}), 400
+    """Handle file input and return anonymized text."""
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
 
     text = ""
     try:
@@ -155,7 +142,10 @@ def anonymize():
                     para.text = anonymize_text(para.text)
                 doc.save(output_path)
         else:
-            return "Unsupported file type", 400
+            return jsonify({"error": "Unsupported file type"}), 400
+
+        if not text.strip():
+            return jsonify({"error": "No text could be extracted"}), 400
 
         return send_file(output_path, as_attachment=True)
 
