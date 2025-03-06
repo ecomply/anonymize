@@ -143,7 +143,14 @@ def anonymize():
         if file_type == 'pdf':
             anonymize_pdf(input_path, output_path)
         elif file_type == 'docx':
-            anonymize_docx(input_path, output_path)
+            from docx import Document
+
+            # Later in the code:
+            def anonymize_docx(input_path, output_path):
+                doc = Document(input_path)
+                for para in doc.paragraphs:
+                    para.text = anonymize_text(para.text)
+                doc.save(output_path)
         else:
             return "Unsupported file type", 400
 
