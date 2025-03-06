@@ -41,10 +41,9 @@ def extract_text_from_url(url):
 
 
 def anonymize_text(text):
-    entities = anonymizer(text)
-    for entity in entities:
-        text = text.replace(entity['word'], "[ANONYMIZED]")
-    return text
+    # Use the initialized anonymization_pipeline
+    anonymized_text = anonymization_pipeline(text)[0]['generated_text']
+    return anonymized_text
 
 def anonymize_pdf(input_path, output_path):
     reader = PyPDF2.PdfFileReader(input_path)
