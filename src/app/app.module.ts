@@ -9,8 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule
+    FormsModule
   ],
   providers: [],
   bootstrap: []
