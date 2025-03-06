@@ -99,3 +99,5 @@ downloadAnonymizedFile(): void {
     console.error('No anonymized file available for download');
   }
 }
+
+
