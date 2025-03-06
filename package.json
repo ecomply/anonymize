@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "dev": "concurrently \"ng serve\" \"python3 app.py\""
+    "dev": "pip install -r requirements.txt && concurrently \"ng serve\" \"python3 app.py\""
   },
   "private": true,
   "dependencies": {
