@@ -1,10 +1,9 @@
 from flask import Flask, request, jsonify, send_file
 import fitz  # PyMuPDF
 import docx
-import requests
-from bs4 import BeautifulSoup
 from transformers import pipeline
-from huggingface_hub import hf_hub_download
+from presidio_analyzer import AnalyzerEngine
+from presidio_anonymizer import AnonymizerEngine
 import fasttext
 import os
 import tempfile
@@ -13,7 +12,8 @@ app = Flask(__name__)
 
 # Initialize the Hugging Face pipelines
 qa_pipeline = pipeline("question-answering")
-anonymization_pipeline = pipeline("text-generation", model="Viniciusplo/Qwen2.5-3B-Instruct-lora-anonymizer")
+analyzer = AnalyzerEngine()
+anonymizer = AnonymizerEngine()
 language_model = fasttext.load_model("lid.176.bin")
 
 def extract_text_from_pdf(file_path):
@@ -30,27 +30,24 @@ def extract_text_from_docx(file_path):
     def extract_text_from_docx(file_path):
         """Extract text from a DOCX file."""
         doc = docx.Document(file_path)
-        return "\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+        return "\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
-    # Use the initialized anonymization_pipeline
-    anonymized_text = anonymization_pipeline(text)[0]['generated_text']
+    """Anonymize text using Presidio."""
+    results = analyzer.analyze(text=text, entities=[], language="en")
+    anonymized_text = anonymizer.anonymize(text=text, analyzer_results=results).text
     return anonymized_text
 
 def anonymize_pdf(input_path, output_path):
-    reader = PyPDF2.PdfFileReader(input_path)
-    writer = PyPDF2.PdfFileWriter()
+    with fitz.open(input_path) as pdf:
+        for page_num in range(len(pdf)):
+            page = pdf[page_num]
+            page_text = page.get_text()
+            anonymized_text = anonymize_text(page_text)
+            page.clean_contents()  # Clear existing content
+            page.insert_text((72, 72), anonymized_text)  # Insert anonymized text at (72, 72)
 
-    for i in range(reader.getNumPages()):
-        page = reader.getPage(i)
-        page_content = page.extract_text()
-        anonymized_content = anonymize_text(page_content)
-        # Note: PyPDF2 does not support writing text back to pages directly
-        # This is a simplified example, you may need to use a different library for full functionality
-        writer.add_page(page)
-
-    with open(output_path, 'wb') as output_file:
-        writer.write(output_file)
+        pdf.save(output_path)
 
 def anonymize_docx(input_path, output_path):
     doc = Document(input_path)
