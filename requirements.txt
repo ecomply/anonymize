@@ -5,3 +5,9 @@ requests
 beautifulsoup4
 transformers
 torch
+fasttext
+langdetect
+huggingface_hub
+reportlab
+pillow
+pdfplumber
