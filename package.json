@@ -27,6 +27,6 @@
   },
   "devDependencies": {
     "@angular/cli": "latest",
-    "@angular-devkit/build-angular:dev-server": "latest"
+    "@angular-devkit/build-angular": "latest"
   }
 }
