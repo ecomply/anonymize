@@ -1,17 +1,20 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 import fitz  # PyMuPDF
 import docx
 import requests
 from bs4 import BeautifulSoup
 from transformers import pipeline
 from huggingface_hub import from_pretrained
+import fasttext
 import os
+import tempfile
 
 app = Flask(__name__)
 
 # Initialize the Hugging Face pipelines
 qa_pipeline = pipeline("question-answering")
 anonymization_pipeline = from_pretrained("ai4privacy/llama-ai4privacy-multilingual-anonymiser-openpii")
+language_model = fasttext.load_model("lid.176.bin")
 
 def extract_text_from_pdf(file_path):
     """Extract text from a PDF file."""
@@ -24,7 +27,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = docx.Document(file_path)
-    return "\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def extract_text_from_url(url):
     """Extract text from a webpage given its URL."""
@@ -97,7 +100,7 @@ def anonymize():
                 return jsonify({"error": "No file selected"}), 400
 
             file_extension = os.path.splitext(uploaded_file.filename)[1].lower()
-            file_path = os.path.join("/tmp", uploaded_file.filename)
+            file_path = os.path.join(tempfile.gettempdir(), uploaded_file.filename)
             uploaded_file.save(file_path)
 
             if file_extension == '.pdf':
@@ -106,8 +109,6 @@ def anonymize():
                 text = extract_text_from_docx(file_path)
             else:
                 return jsonify({"error": "Unsupported file type"}), 400
-
-            os.remove(file_path)
 
         # Handle URL input
         elif 'url' in request.form:
@@ -120,10 +121,12 @@ def anonymize():
         # Perform anonymization
         anonymized_text = anonymization_pipeline(text)
 
-        return jsonify({
-            "original_text": text[:500],  # Include a snippet of the original text for reference
-            "anonymized_text": anonymized_text
-        })
+        # Save anonymized text to a file for download
+        anonymized_file_path = os.path.join(tempfile.gettempdir(), "anonymized_output.txt")
+        with open(anonymized_file_path, "w") as f:
+            f.write(anonymized_text)
+
+        return send_file(anonymized_file_path, as_attachment=True, download_name="anonymized_output.txt")
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

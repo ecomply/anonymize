@@ -12,6 +12,8 @@ import { ApiService } from '../api.service';
 export class UploadComponent {
   uploadForm: FormGroup;
   fileToUpload: File | null = null;
+  analysisResult: string | null = null;
+  anonymizationResult: string | null = null;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.uploadForm = this.fb.group({
@@ -43,16 +45,38 @@ export class UploadComponent {
 
       this.apiService.uploadFileOrUrl(formData).subscribe(
         (response) => {
-          if (response.type === 'analysis') {
-            console.log('Document Analysis Result:', response.data);
-          } else if (response.type === 'anonymization') {
-            console.log('Document Anonymization Result:', response.data);
-          } else {
-            console.log('Unknown response type:', response);
-          }
+          this.analysisResult = response.data;
+          console.log('Document Analysis Result:', response.data);
         },
         (error) => {
           console.error('Operation failed:', error);
+        }
+      );
+    } else {
+      console.error('Form is invalid');
+    }
+  }
+
+  anonymizeDocument(): void {
+    if (this.uploadForm.valid) {
+      const formData = new FormData();
+
+      if (this.fileToUpload) {
+        formData.append('file', this.fileToUpload);
+      }
+
+      const url = this.uploadForm.get('url')?.value;
+      if (url) {
+        formData.append('url', url);
+      }
+
+      this.apiService.anonymizeDocument(formData).subscribe(
+        (response) => {
+          this.anonymizationResult = response.anonymized_text;
+          console.log('Document Anonymization Result:', response.anonymized_text);
+        },
+        (error) => {
+          console.error('Anonymization failed:', error);
         }
       );
     } else {
