@@ -6,6 +6,7 @@ beautifulsoup4
 transformers
 torch
 sentencepiece
+sentencepiece
 fasttext
 langdetect
 huggingface_hub
