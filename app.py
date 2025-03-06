@@ -127,20 +127,20 @@ def anonymize():
             if uploaded_file.filename == '':
                 return jsonify({"error": "No file selected"}), 400
 
-            file = request.files['file']
-    file_type = file.filename.split('.')[-1]
-    input_path = f"input.{file_type}"
-    output_path = f"output.{file_type}"
-    file.save(input_path)
+        file = request.files['file']
+        file_type = file.filename.split('.')[-1]
+        input_path = f"input.{file_type}"
+        output_path = f"output.{file_type}"
+        file.save(input_path)
 
-    if file_type == 'pdf':
-        anonymize_pdf(input_path, output_path)
-    elif file_type == 'docx':
-        anonymize_docx(input_path, output_path)
-    else:
-        return "Unsupported file type", 400
+        if file_type == 'pdf':
+            anonymize_pdf(input_path, output_path)
+        elif file_type == 'docx':
+            anonymize_docx(input_path, output_path)
+        else:
+            return "Unsupported file type", 400
 
-    return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True)
 
 
     except Exception as e:
