@@ -8,9 +8,6 @@ torch
 fasttext
 langdetect
 huggingface_hub
-fasttext
-langdetect
-huggingface_hub
-fasttext
-langdetect
-huggingface_hub
+reportlab
+pillow
+pdfplumber

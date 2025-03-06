@@ -98,7 +98,7 @@ export class UploadComponent {
       console.error('No anonymized file available for download');
     }
   }
-  }
+}
 
   anonymizeDocument(): void {
     if (this.uploadForm.valid) {
