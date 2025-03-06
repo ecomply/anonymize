@@ -84,20 +84,17 @@ export class UploadComponent {
       console.error('Form is invalid');
     }
   }
-}
-
-downloadAnonymizedFile(): void {
-  if (this.anonymizationResult) {
-    const blob = new Blob([this.anonymizationResult], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'anonymized_output.txt';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  } else {
-    console.error('No anonymized file available for download');
+  downloadAnonymizedFile(): void {
+    if (this.anonymizationResult) {
+      const blob = new Blob([this.anonymizationResult], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'anonymized_output.txt';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } else {
+      console.error('No anonymized file available for download');
+    }
   }
 }
-
-
