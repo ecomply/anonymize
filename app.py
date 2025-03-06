@@ -4,7 +4,7 @@ import docx
 import requests
 from bs4 import BeautifulSoup
 from transformers import pipeline
-from huggingface_hub import from_pretrained
+from huggingface_hub import hf_hub_download
 import fasttext
 import os
 import tempfile
@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 # Initialize the Hugging Face pipelines
 qa_pipeline = pipeline("question-answering")
-anonymization_pipeline = from_pretrained("ai4privacy/llama-ai4privacy-multilingual-anonymiser-openpii")
+anonymization_pipeline = pipeline("text2text-generation", model=hf_hub_download(repo_id="ai4privacy/llama-ai4privacy-multilingual-anonymiser-openpii", filename="pytorch_model.bin"))
 language_model = fasttext.load_model("lid.176.bin")
 
 def extract_text_from_pdf(file_path):
@@ -27,7 +27,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = docx.Document(file_path)
-    return "\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def extract_text_from_url(url):
     """Extract text from a webpage given its URL."""

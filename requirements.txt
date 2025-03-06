@@ -8,3 +8,6 @@ torch
 fasttext
 langdetect
 huggingface_hub
+fasttext
+langdetect
+huggingface_hub
