@@ -88,7 +88,7 @@ export class UploadComponent {
         window.URL.revokeObjectURL(url);
       } 
       // For downloading the file processed by the backend
-      else if (this.anonymizationResult.fileId) {
+      else if (typeof this.anonymizationResult === 'object' && this.anonymizationResult.fileId) {
         this.apiService.downloadAnonymizedFile(this.anonymizationResult.fileId)
           .subscribe(blob => {
             const url = window.URL.createObjectURL(blob);
