@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule,
+    AppComponent,
+    UploadComponent } from '@angular/common/http';
 
-import { AppComponent } from './app.component';
+import {  } from './app.component';
 import { UploadComponent } from './upload/upload.component';
 
 @NgModule({
@@ -14,8 +16,7 @@ import { UploadComponent } from './upload/upload.component';
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppComponent,
-    UploadComponent
+    
   ],
   providers: [],
   bootstrap: []
