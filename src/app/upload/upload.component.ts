@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -7,7 +8,7 @@ import { ApiService } from '../api.service';
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.css'],
   standalone: true,
-  imports: [ReactiveFormsModule]
+  imports: [ReactiveFormsModule, CommonModule]
 })
 export class UploadComponent {
   uploadForm: FormGroup;
@@ -82,5 +83,19 @@ export class UploadComponent {
     } else {
       console.error('Form is invalid');
     }
+  }
+}
+
+downloadAnonymizedFile(): void {
+  if (this.anonymizationResult) {
+    const blob = new Blob([this.anonymizationResult], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'anonymized_output.txt';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } else {
+    console.error('No anonymized file available for download');
   }
 }
