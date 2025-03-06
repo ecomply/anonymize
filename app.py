@@ -126,12 +126,17 @@ def anonymize():
             uploaded_file = request.files['file']
             if uploaded_file.filename == '':
                 return jsonify({"error": "No file selected"}), 400
-
-        file = request.files['file']
-        file_type = file.filename.split('.')[-1]
-        input_path = f"input.{file_type}"
-        output_path = f"output.{file_type}"
-        file.save(input_path)
+            
+            file = request.files['file']
+            file_type = file.filename.split('.')[-1]
+            
+            # Create temporary files with unique names
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f'.{file_type}') as input_temp:
+                input_path = input_temp.name
+                file.save(input_path)
+            
+            output_fd, output_path = tempfile.mkstemp(suffix=f'.{file_type}')
+            os.close(output_fd)  # Close the file descriptor
 
         if file_type == 'pdf':
             anonymize_pdf(input_path, output_path)
