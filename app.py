@@ -27,7 +27,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = docx.Document(file_path)
-    return "\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def extract_text_from_url(url):
     """Extract text from a webpage given its URL."""
@@ -119,7 +119,7 @@ def anonymize():
             return jsonify({"error": "No text could be extracted"}), 400
 
         # Perform anonymization
-        anonymized_text = anonymization_pipeline(text)
+        anonymized_text = anonymization_pipeline(text)[0]['generated_text']
 
         # Save anonymized text to a file for download
         anonymized_file_path = os.path.join(tempfile.gettempdir(), "anonymized_output.txt")
