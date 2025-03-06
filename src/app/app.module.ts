@@ -8,14 +8,13 @@ import { UploadComponent } from './upload/upload.component';
 
 @NgModule({
   declarations: [
-    
+    AppComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
-    HttpClientModule,
-    AppComponent,
-    UploadComponent
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
