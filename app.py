@@ -141,6 +141,9 @@ def anonymize():
             os.close(output_fd)  # Close the file descriptor
 
         if file_type == 'pdf':
+            import PyPDF2
+
+            # Later in the code:
             anonymize_pdf(input_path, output_path)
         elif file_type == 'docx':
             from docx import Document
