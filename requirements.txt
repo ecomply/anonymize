@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+transformers
+pdfplumber
+python-docx
+PyPDF2
+reportlab
+pillow
+pytesseract
