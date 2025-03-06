@@ -11,6 +11,7 @@ import tempfile
 
 app = Flask(__name__)
 
+
 # Initialize the Hugging Face pipelines
 qa_pipeline = pipeline("question-answering")
 anonymization_pipeline = pipeline("text2text-generation", model="LLaMA-3.1", tokenizer="LLaMA-3.1")
