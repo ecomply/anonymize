@@ -8,3 +8,4 @@ flask-cors
 flask-restx
 flasgger
 gunicorn
+transformers
