@@ -17,8 +17,8 @@ swagger = Swagger(app, template={
         "description": "API for anonymizing sensitive information in documents.",
         "version": "1.0.0"
     },
-    "host": "localhost:8080",
-    "basePath": "/",
+    "host": "localhost:5001",
+    "basePath": "/api-docs",
     "schemes": ["http"],
     "tags": [
         {
@@ -43,7 +43,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -145,5 +145,10 @@ def serve_frontend(path):
     except Exception as e:
         return jsonify({"error": str(e)}), 404
 
+@app.route('/')
+def redirect_to_swagger():
+    """Redirect root URL to Swagger documentation."""
+    return jsonify({"message": "Redirecting to Swagger documentation"}), 302, {'Location': '/api-docs'}
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
