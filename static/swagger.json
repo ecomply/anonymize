@@ -6,8 +6,8 @@
     "version": "1.0.0"
   },
   "host": "localhost:5001",
-  "basePath": "/api",
-  "schemes": ["http"],
+  "basePath": "/",
+  "schemes": ["http", "https"],
   "tags": [
     {
       "name": "Anonymization",
@@ -15,7 +15,7 @@
     }
   ],
   "paths": {
-    "/anonymize": {
+    "/v1/anonymize": {
       "post": {
         "tags": ["Anonymization"],
         "summary": "Anonymize sensitive information in a document",

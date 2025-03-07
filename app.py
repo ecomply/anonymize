@@ -10,7 +10,7 @@ from flasgger import Swagger
 
 app = Flask(__name__)
 CORS(app)
-swagger = Swagger(app, template_file="/static/swagger.json")
+swagger = Swagger(app, template_file="static/swagger.json")
 
 # Initialize Presidio engines
 analyzer = AnalyzerEngine()
@@ -27,7 +27,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
