@@ -1,0 +1,9 @@
+Flask
+presidio-analyzer
+presidio-anonymizer
+python-docx
+PyMuPDF
+pytest
+flask-cors
+flask-restx
+flasgger
