@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, redirect
 from flask_cors import CORS
 import os
 import tempfile
@@ -114,8 +114,9 @@ def anonymize():
 @app.route('/')
 def redirect_to_swagger():
     """Redirect root URL to Swagger documentation."""
-    return jsonify({"message": "Redirecting to Swagger documentation"}), 302, {'Location': '/apidocs'}
+    return redirect('/apidocs/', code=302)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     app.run(host='0.0.0.0', port=5001, debug=True)
+    
