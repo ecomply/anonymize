@@ -28,7 +28,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -102,7 +102,7 @@ def anonymize():
         else:
             return jsonify({"error": "Unsupported file type"}), 400
 
-        return send_file(output_path, as_attachment=True)
+        return send_file(output_path, as_attachment=True, mimetype='application/pdf', download_name='anonymized_document.pdf')
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -119,4 +119,3 @@ def redirect_to_swagger():
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     app.run(host='0.0.0.0', port=5001, debug=True)
-    
