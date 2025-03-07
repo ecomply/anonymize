@@ -70,12 +70,13 @@
     <h1>Swagger API Interface</h1>
   </header>
   <main>
-    <div class="form-group">
-      <label for="swaggerUrl">Enter Swagger URL:</label>
-      <input type="text" id="swaggerUrl" placeholder="http://localhost:8080/api-docs">
-    </div>
-    <button onclick="loadSwagger()">Load Swagger</button>
-    <iframe id="swaggerFrame" src=""></iframe>
+    <form id="uploadForm" enctype="multipart/form-data" method="post" action="/anonymize">
+      <div class="form-group">
+        <label for="fileInput">Upload File:</label>
+        <input type="file" id="fileInput" name="file" required>
+      </div>
+      <button type="submit">Upload and Anonymize</button>
+    </form>
   </main>
   <script>
     function loadSwagger() {

@@ -28,7 +28,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -112,9 +112,65 @@ def anonymize():
         os.remove(output_path)
 
 @app.route('/')
-def redirect_to_swagger():
-    """Redirect root URL to Swagger documentation."""
-    return redirect('/apidocs/', code=302)
+def upload_form():
+    """Serve a simple HTML form for file upload."""
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>File Upload</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f9;
+                color: #333;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            .upload-container {
+                text-align: center;
+                background: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            input[type="file"] {
+                margin: 10px 0;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 1rem;
+                color: #fff;
+                background-color: #007bff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+            button:hover {
+                background-color: #0056b3;
+                transform: scale(1.05);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="upload-container">
+            <h1>Upload File</h1>
+            <form action="/anonymize" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <br>
+                <button type="submit">Anonymize</button>
+            </form>
+        </div>
+    </body>
+    </html>
+    """
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
