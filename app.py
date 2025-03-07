@@ -9,7 +9,7 @@ from docx import Document
 import fitz  # PyMuPDF
 from flasgger import Swagger
 import logging
-from transformers import pipeline
+from model import PIIMasker
 import io
 
 app = Flask(__name__, static_folder='static')
@@ -37,8 +37,8 @@ swagger = Swagger(app, config=swagger_config)
 analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
 
-# Initialize the transformers pipeline
-transformer_anonymizer = pipeline("text-generation", model="distilgpt2")
+# Initialize the PIIMasker
+pii_masker = PIIMasker()
 
 def extract_text_from_pdf(file_path):
     """Extract text from a PDF file."""
@@ -51,7 +51,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text_presidio(text):
     """Anonymize text using Presidio."""
@@ -59,19 +59,12 @@ def anonymize_text_presidio(text):
     anonymized_text = anonymizer.anonymize(text=text, analyzer_results=results).text
     return anonymized_text
 
-def anonymize_text_transformer(text):
-    """Anonymize text using the transformers pipeline with a fallback mechanism."""
+def anonymize_text_pii_masker(text):
+    """Anonymize text using the PIIMasker."""
     try:
-        # Generate anonymized text
-        response = transformer_anonymizer(text, max_length=1024, do_sample=True, temperature=0.7)
-        
-        # Extract the generated text from the response
-        if isinstance(response, list) and len(response) > 0:
-            anonymized_text = response[0]['generated_text']
-        else:
-            anonymized_text = str(response)
+        anonymized_text = pii_masker.mask(text)
     except Exception as e:
-        logging.error(f"Transformer anonymization failed: {str(e)}. Falling back to Presidio.")
+        logging.error(f"PIIMasker anonymization failed: {str(e)}. Falling back to Presidio.")
         anonymized_text = anonymize_text_presidio(text)
     
     return anonymized_text
@@ -87,13 +80,13 @@ def anonymize_pdf_presidio(input_path, output_path):
             new_page.insert_text((72, 72), anonymized_text)
         doc.save(output_path)
 
-def anonymize_pdf_transformer(input_path, output_path):
-    """Anonymize a PDF file using transformer model."""
+def anonymize_pdf_pii_masker(input_path, output_path):
+    """Anonymize a PDF file using PIIMasker."""
     with fitz.open(input_path) as pdf:
         doc = fitz.open()
         for page in pdf:
             text = page.get_text()
-            anonymized_text = anonymize_text_transformer(text)
+            anonymized_text = anonymize_text_pii_masker(text)
             new_page = doc.new_page(width=page.rect.width, height=page.rect.height)
             new_page.insert_text((72, 72), anonymized_text)
         doc.save(output_path)
@@ -105,11 +98,11 @@ def anonymize_docx_presidio(input_path, output_path):
         para.text = anonymize_text_presidio(para.text)
     doc.save(output_path)
 
-def anonymize_docx_transformer(input_path, output_path):
-    """Anonymize a DOCX file using transformer model."""
+def anonymize_docx_pii_masker(input_path, output_path):
+    """Anonymize a DOCX file using PIIMasker."""
     doc = Document(input_path)
     for para in doc.paragraphs:
-        para.text = anonymize_text_transformer(para.text)
+        para.text = anonymize_text_pii_masker(para.text)
     doc.save(output_path)
 
 @app.route('/anonymize', methods=['POST'])
@@ -164,10 +157,10 @@ def anonymize():
 
         if file_extension == '.pdf':
             anonymize_pdf_presidio(input_path, presidio_output_path)
-            anonymize_pdf_transformer(input_path, transformer_output_path)
+            anonymize_pdf_pii_masker(input_path, transformer_output_path)
         elif file_extension == '.docx':
             anonymize_docx_presidio(input_path, presidio_output_path)
-            anonymize_docx_transformer(input_path, transformer_output_path)
+            anonymize_docx_pii_masker(input_path, transformer_output_path)
         else:
             return jsonify({"error": "Unsupported file type"}), 400
 

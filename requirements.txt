@@ -13,3 +13,8 @@ torch
 TensorFlow
 Flax
 tf_keras
+transformers
+torch
+TensorFlow
+Flax
+tf_keras
