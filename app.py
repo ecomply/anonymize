@@ -114,7 +114,7 @@ def anonymize():
 @app.route('/')
 def redirect_to_swagger():
     """Redirect to Swagger UI."""
-    return redirect("/api-docs")
+    return redirect("/apidocs")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
