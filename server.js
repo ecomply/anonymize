@@ -20,7 +20,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Proxy requests to the Python API
-app.use('/anonymize', (req, res) => {
+app.use('/api/:tenantId/anonymize', (req, res) => {
+  const tenantId = req.params.tenantId;
+  req.headers['X-Tenant-ID'] = tenantId; // Add tenant ID to headers for multi-tenancy
   apiProxy.web(req, res, { target: PYTHON_API_URL });
 });
 
