@@ -33,7 +33,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -120,6 +120,11 @@ def anonymize():
 def redirect_to_swagger():
     """Redirect to Swagger UI."""
     return redirect("/api-docs", code=302)
+
+@app.route('/api-docs', methods=['GET'])
+def serve_swagger_ui():
+    """Serve the custom Swagger UI."""
+    return send_file("static/swagger-ui.html")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
