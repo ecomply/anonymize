@@ -12,3 +12,4 @@ transformers
 torch
 TensorFlow
 Flax
+tf_keras
