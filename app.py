@@ -17,7 +17,7 @@ swagger = Swagger(app, template={
         "description": "API for anonymizing sensitive information in documents.",
         "version": "1.0.0"
     },
-    "host": "localhost:8080",
+    "host": "localhost:5000",
     "basePath": "/",
     "schemes": ["http"],
     "tags": [
