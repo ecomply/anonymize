@@ -131,13 +131,14 @@ def anonymize():
             output_fd, output_path = tempfile.mkstemp(suffix=f'.{file_type}')
             os.close(output_fd)  # Close the file descriptor
 
-       if file_type == 'docx':
-        anonymized_file = anonymize_docx(file.stream)
-    elif file_type == 'pdf':
-        anonymized_file = anonymize_pdf(file.stream)
-    else:
-        return jsonify({'error': 'Unsupported file type'}), 400
-    return anonymized_file.read(), 200, {'Content-Disposition': f'attachment; filename=anonymized_{file.filename}'}
+        if file_type == 'docx':
+            anonymized_file = anonymize_docx(file.stream)
+        elif file_type == 'pdf':
+            anonymized_file = anonymize_pdf(file.stream)
+        else:
+            return jsonify({'error': 'Unsupported file type'}), 400
+        
+        return anonymized_file.read(), 200, {'Content-Disposition': f'attachment; filename=anonymized_{file.filename}'}
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
