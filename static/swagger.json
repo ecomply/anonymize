@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "host": "localhost:5001",
-  "basePath": "/v1",
+  "basePath": "/",
   "schemes": ["http"],
   "tags": [
     {
@@ -15,7 +15,7 @@
     }
   ],
   "paths": {
-    "/v1/anonymize": {
+    "/anonymize": {
       "post": {
         "tags": ["Anonymization"],
         "summary": "Anonymize sensitive information in a document",
