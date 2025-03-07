@@ -38,7 +38,7 @@ analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
 
 # Initialize the transformers pipeline
-transformer_anonymizer = pipeline("text-generation", model="Viniciusplo/Qwen2.5-3B-Instruct-lora-anonymizer")
+transformer_anonymizer = pipeline("text-generation", model="distilgpt2")
 
 def extract_text_from_pdf(file_path):
     """Extract text from a PDF file."""
@@ -51,7 +51,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text_presidio(text):
     """Anonymize text using Presidio."""
@@ -60,23 +60,19 @@ def anonymize_text_presidio(text):
     return anonymized_text
 
 def anonymize_text_transformer(text):
-    """Anonymize text using the transformers pipeline."""
-    messages = [
-        {"role": "user", "content": f"Please anonymize the following text by removing all personal identifiable information: {text}"}
-    ]
-    
-    # Generate anonymized text
-    response = transformer_anonymizer(messages, max_length=1024, do_sample=True, temperature=0.7)
-    
-    # Extract the generated text from the response
-    if isinstance(response, list) and len(response) > 0:
-        if 'generated_text' in response[0]:
+    """Anonymize text using the transformers pipeline with a fallback mechanism."""
+    try:
+        # Generate anonymized text
+        response = transformer_anonymizer(text, max_length=1024, do_sample=True, temperature=0.7)
+        
+        # Extract the generated text from the response
+        if isinstance(response, list) and len(response) > 0:
             anonymized_text = response[0]['generated_text']
         else:
-            # Handle different response formats
-            anonymized_text = str(response[0])
-    else:
-        anonymized_text = str(response)
+            anonymized_text = str(response)
+    except Exception as e:
+        logging.error(f"Transformer anonymization failed: {str(e)}. Falling back to Presidio.")
+        anonymized_text = anonymize_text_presidio(text)
     
     return anonymized_text
 
