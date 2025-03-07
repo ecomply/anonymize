@@ -38,7 +38,7 @@ analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
 
 # Initialize the transformers pipeline
-transformer_anonymizer = pipeline("text-generation", model="Viniciusplo/Qwen2.5-3B-Instruct-lora-anonymizer")
+transformer_anonymizer = pipeline("token-classification", model="Isotonic/distilbert_finetuned_ai4privacy_v2")
 
 def extract_text_from_pdf(file_path):
     """Extract text from a PDF file."""
