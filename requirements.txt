@@ -9,3 +9,6 @@ flask-restx
 flasgger
 gunicorn
 transformers
+PyTorch
+TensorFlow
+Flax
