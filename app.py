@@ -1,12 +1,16 @@
 from flask import Flask, request, jsonify, send_file
+from flask_cors import CORS
 import os
 import tempfile
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
 from docx import Document
 import fitz  # PyMuPDF
+from flasgger import Swagger
 
 app = Flask(__name__)
+CORS(app)
+swagger = Swagger(app)
 
 # Initialize Presidio engines
 analyzer = AnalyzerEngine()
@@ -23,7 +27,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -51,7 +55,29 @@ def anonymize_docx(input_path, output_path):
 
 @app.route('/anonymize', methods=['POST'])
 def anonymize():
-    """Handle file input and return anonymized file."""
+    """
+    Handle file input and return anonymized file.
+    ---
+    tags:
+      - Anonymization
+    consumes:
+      - multipart/form-data
+    parameters:
+      - name: file
+        in: formData
+        type: file
+        required: true
+        description: The file to be anonymized (PDF or DOCX).
+    responses:
+      200:
+        description: Anonymized file successfully returned.
+        schema:
+          type: file
+      400:
+        description: Invalid input or unsupported file type.
+      500:
+        description: Internal server error.
+    """
     if 'file' not in request.files:
         return jsonify({"error": "No file provided"}), 400
 
@@ -85,4 +111,4 @@ def anonymize():
         os.remove(output_path)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
