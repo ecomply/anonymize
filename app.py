@@ -10,23 +10,7 @@ from flasgger import Swagger
 
 app = Flask(__name__)
 CORS(app)
-swagger = Swagger(app, config={
-    "swagger": "2.0",
-    "info": {
-        "title": "Ecomply Anonymize API",
-        "description": "API for anonymizing sensitive information in documents.",
-        "version": "1.0.0"
-    },
-    "host": "localhost:5001",
-    "basePath": "/api",
-    "schemes": ["http"],
-    "tags": [
-        {
-            "name": "Anonymization",
-            "description": "Endpoints for document anonymization"
-        }
-    ]
-}, template_file="/static/swagger.json")
+swagger = Swagger(app, template_file="/static/swagger.json")
 
 # Initialize Presidio engines
 analyzer = AnalyzerEngine()
