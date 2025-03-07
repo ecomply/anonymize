@@ -44,14 +44,6 @@ Navigate to the root directory and install Python dependencies:
 pip install -r requirements.txt
 ```
 
-### Step 3: Install Frontend Dependencies
-
-Navigate to the `src` directory and install Node.js dependencies:
-
-```bash
-npm install
-```
-
 ---
 
 ## Running the Application
@@ -64,7 +56,7 @@ Run the Python Flask API:
 python3 app.py
 ```
 
-The backend will start on `http://localhost:5000`.
+The backend will start on `http://localhost:8080`.
 
 ### Step 2: Start the Node.js Server
 
@@ -76,7 +68,15 @@ npm run dev
 
 The server will start on `http://localhost:3000`.
 
-### Step 3: Access the Application
+### Step 3: Access the Swagger API Interface
+
+Open your browser and navigate to:
+
+```
+http://localhost:8080/api-docs
+```
+
+### Step 4: Access the Application
 
 Open your browser and navigate to:
 

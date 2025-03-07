@@ -7,3 +7,4 @@ pytest
 flask-cors
 flask-restx
 flasgger
+flask
