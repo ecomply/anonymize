@@ -15,21 +15,6 @@ qa_pipeline = pipeline("question-answering")
 analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
 
-def extract_text_from_pdf(file_path):
-    """Extract text from a PDF file."""
-    text = ""
-    with fitz.open(file_path) as pdf:
-        for page in pdf:
-            text += page.get_text()
-    return text
-
-def extract_text_from_docx(file_path):
-    """Extract text from a DOCX file."""
-    doc = docx.Document(file_path)
-    def extract_text_from_docx(file_path):
-        """Extract text from a DOCX file."""
-        doc = docx.Document(file_path)
-        return "\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def detect_language(text):
     """Detect language using langdetect."""
@@ -49,11 +34,33 @@ def anonymize_pdf(input_path, output_path):
 
         pdf.save(output_path)
 
-def anonymize_docx(input_path, output_path):
-    doc = Document(input_path)
+def anonymize_text(text):
+    results = analyzer.analyze(text=text, entities=[], language='en')
+    anonymized_text = anonymizer.anonymize(text=text, analyzer_results=results)
+    return anonymized_text
+
+def anonymize_docx(file_stream):
+    doc = Document(file_stream)
     for para in doc.paragraphs:
-        para.text = anonymize_text(para.text)
-    doc.save(output_path)
+        para.text = anonymize_text(para.text).text
+    output_stream = io.BytesIO()
+    doc.save(output_stream)
+    output_stream.seek(0)
+    return output_stream
+
+def anonymize_pdf(file_stream):
+    reader = PdfFileReader(file_stream)
+    writer = PdfFileWriter()
+    for page_num in range(reader.getNumPages()):
+        page = reader.getPage(page_num)
+        content = page.extract_text()
+        anonymized_content = anonymize_text(content).text
+        page.merge_text(anonymized_content)
+        writer.addPage(page)
+    output_stream = io.BytesIO()
+    writer.write(output_stream)
+    output_stream.seek(0)
+    return output_stream
 
 @app.route('/answer', methods=['POST'])
 def answer():
@@ -124,28 +131,13 @@ def anonymize():
             output_fd, output_path = tempfile.mkstemp(suffix=f'.{file_type}')
             os.close(output_fd)  # Close the file descriptor
 
-        if file_type == 'pdf':
-            import PyPDF2
-
-            # Later in the code:
-            anonymize_pdf(input_path, output_path)
-        elif file_type == 'docx':
-            from docx import Document
-
-            # Later in the code:
-            def anonymize_docx(input_path, output_path):
-                doc = Document(input_path)
-                for para in doc.paragraphs:
-                    para.text = anonymize_text(para.text)
-                doc.save(output_path)
-        else:
-            return jsonify({"error": "Unsupported file type"}), 400
-
-        if not text.strip():
-            return jsonify({"error": "No text could be extracted"}), 400
-
-        return send_file(output_path, as_attachment=True)
-
+       if file_type == 'docx':
+        anonymized_file = anonymize_docx(file.stream)
+    elif file_type == 'pdf':
+        anonymized_file = anonymize_pdf(file.stream)
+    else:
+        return jsonify({'error': 'Unsupported file type'}), 400
+    return anonymized_file.read(), 200, {'Content-Disposition': f'attachment; filename=anonymized_{file.filename}'}
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
