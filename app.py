@@ -38,7 +38,7 @@ analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
 
 # Initialize the transformers pipeline
-transformer_anonymizer = pipeline("token-classification", model="Isotonic/distilbert_finetuned_ai4privacy_v2")
+transformer_anonymizer = pipeline("token-classification", model="Isotonic/distilbert_finetuned_ai4privacy_v2", device="cpu")
 
 def extract_text_from_pdf(file_path):
     """Extract text from a PDF file."""
@@ -51,7 +51,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text_presidio(text):
     """Anonymize text using Presidio."""
