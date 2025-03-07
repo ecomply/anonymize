@@ -44,14 +44,6 @@ Navigate to the root directory and install Python dependencies:
 pip install -r requirements.txt
 ```
 
-### Step 3: Install Frontend Dependencies
-
-Navigate to the `src` directory and install Node.js dependencies:
-
-```bash
-npm install
-```
-
 ---
 
 ## Running the Application
