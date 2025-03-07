@@ -7,8 +7,9 @@ from presidio_anonymizer import AnonymizerEngine
 from docx import Document
 import fitz  # PyMuPDF
 from flasgger import Swagger
+import logging
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 CORS(app)
 swagger = Swagger(app, template_file="static/swagger.json")
 
@@ -110,12 +111,11 @@ def anonymize():
         os.remove(input_path)
         os.remove(output_path)
 
-
-
 @app.route('/')
 def redirect_to_swagger():
     """Redirect root URL to Swagger documentation."""
-    return jsonify({"message": "Redirecting to Swagger documentation"}), 302, {'Location': '/api-docs'}
+    return jsonify({"message": "Redirecting to Swagger documentation"}), 302, {'Location': '/apidocs'}
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     app.run(host='0.0.0.0', port=5001, debug=True)
