@@ -126,24 +126,7 @@ def anonymize():
         os.remove(input_path)
         os.remove(output_path)
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_frontend(path):
-    """
-    Serve the Angular frontend.
-    ---
-    tags:
-      - Frontend
-    responses:
-      200:
-        description: Angular frontend served successfully.
-      404:
-        description: File not found.
-    """
-    try:
-        return send_file(os.path.join('static', 'index.html'))
-    except Exception as e:
-        return jsonify({"error": str(e)}), 404
+
 
 @app.route('/')
 def redirect_to_swagger():
