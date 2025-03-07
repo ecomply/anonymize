@@ -10,7 +10,6 @@ from flasgger import Swagger
 import logging
 
 app = Flask(__name__, static_folder='static')
-CORS(app, resources={r"/*": {"origins": "http://localhost:4205"}})
 swagger = Swagger(app, template_file="static/swagger.json", config={"swagger_ui": True, "specs": [{"endpoint": "apispec", "route": "/api-docs"}], "headers": [], "static_url_path": "/api-docs"})
 
 # Initialize Presidio engines
