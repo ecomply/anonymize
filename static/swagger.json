@@ -6,8 +6,8 @@
     "version": "1.0.0"
   },
   "host": "localhost:5001",
-  "basePath": "/",
-  "schemes": ["http", "https"],
+  "basePath": "/v1",
+  "schemes": ["http"],
   "tags": [
     {
       "name": "Anonymization",
