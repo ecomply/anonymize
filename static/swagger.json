@@ -1,0 +1,56 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Ecomply Anonymize API",
+    "description": "API for anonymizing sensitive information in documents.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5001",
+  "basePath": "/api",
+  "schemes": ["http"],
+  "tags": [
+    {
+      "name": "Anonymization",
+      "description": "Endpoints for document anonymization"
+    }
+  ],
+  "paths": {
+    "/anonymize": {
+      "post": {
+        "tags": ["Anonymization"],
+        "summary": "Anonymize sensitive information in a document",
+        "description": "Upload a PDF or DOCX file to anonymize sensitive information.",
+        "consumes": ["multipart/form-data"],
+        "produces": ["application/octet-stream"],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "The file to be anonymized (PDF or DOCX).",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Anonymized file successfully returned.",
+            "schema": {
+              "type": "file"
+            }
+          },
+          "400": {
+            "description": "Invalid input or unsupported file type."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "externalDocs": {
+    "description": "Find more about the Ecomply Anonymize API",
+    "url": "https://www.ecomply.com"
+  }
+}
