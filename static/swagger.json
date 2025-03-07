@@ -5,9 +5,12 @@
     "description": "API for anonymizing sensitive information in documents.",
     "version": "1.0.0"
   },
-  "host": "localhost:5001",
-  "basePath": "/",
-  "schemes": ["http", "https"],
+  "servers": [
+    {
+      "url": "http://localhost:5001",
+      "description": "Local server"
+    }
+  ],
   "tags": [
     {
       "name": "Anonymization",
@@ -20,22 +23,33 @@
         "tags": ["Anonymization"],
         "summary": "Anonymize sensitive information in a document",
         "description": "Upload a PDF or DOCX file to anonymize sensitive information.",
-        "consumes": ["multipart/form-data"],
-        "produces": ["application/octet-stream"],
-        "parameters": [
-          {
-            "name": "file",
-            "in": "formData",
-            "description": "The file to be anonymized (PDF or DOCX).",
-            "required": true,
-            "type": "file"
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file to be anonymized (PDF or DOCX)."
+                  }
+                },
+                "required": ["file"]
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Anonymized file successfully returned.",
-            "schema": {
-              "type": "file"
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
             }
           },
           "400": {
@@ -48,7 +62,6 @@
       }
     }
   },
-  "definitions": {},
   "externalDocs": {
     "description": "Find more about the Ecomply Anonymize API",
     "url": "https://www.ecomply.com"
