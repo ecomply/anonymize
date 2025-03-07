@@ -9,16 +9,6 @@
     {
       "url": "http://localhost:5001",
       "description": "Local server"
-    },
-    {
-      "url": "https://{tenant}.ecomply.com",
-      "description": "Multi-tenant server",
-      "variables": {
-        "tenant": {
-          "default": "example",
-          "description": "Tenant-specific subdomain"
-        }
-      }
     }
   ],
   "tags": [
