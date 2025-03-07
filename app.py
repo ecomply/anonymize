@@ -11,7 +11,7 @@ import logging
 
 app = Flask(__name__, static_folder='static')
 CORS(app, resources={r"/*": {"origins": "http://localhost:4205"}})
-swagger = Swagger(app, template_file="static/swagger.json", config={"swagger_ui": True, "specs": [{"endpoint": "apispec", "route": "/apispec.json"}], "headers": []})
+swagger = Swagger(app, template_file="static/swagger.json", config={"swagger_ui": True, "specs": [{"endpoint": "apispec", "route": "/api-docs"}], "headers": []})
 
 # Initialize Presidio engines
 analyzer = AnalyzerEngine()
@@ -28,7 +28,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -114,7 +114,7 @@ def anonymize():
 @app.route('/')
 def redirect_to_swagger():
     """Redirect to Swagger UI."""
-    return redirect("/apidocs")
+    return redirect("/api-docs")
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
