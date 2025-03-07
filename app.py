@@ -10,7 +10,13 @@ from flasgger import Swagger
 import logging
 
 app = Flask(__name__, static_folder='static')
-swagger = Swagger(app, template_file="static/swagger.json", config={"swagger_ui": True, "specs": [{"endpoint": "apispec", "route": "/api-docs"}], "headers": [], "static_url_path": "/api-docs"})
+swagger = Swagger(app, template_file="static/swagger.json", config={
+    "swagger_ui": True,
+    "specs": [{"endpoint": "apispec", "route": "/api-docs"}],
+    "headers": [],
+    "static_url_path": "/api-docs",
+    "specs_route": "/api-docs"
+})
 
 # Initialize Presidio engines
 analyzer = AnalyzerEngine()
@@ -27,7 +33,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
