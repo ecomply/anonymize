@@ -10,7 +10,7 @@ from flasgger import Swagger
 import logging
 
 app = Flask(__name__, static_folder='static')
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:4205"}})
 swagger = Swagger(app, template_file="static/swagger.json")
 
 # Initialize Presidio engines
@@ -28,7 +28,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -102,7 +102,7 @@ def anonymize():
         else:
             return jsonify({"error": "Unsupported file type"}), 400
 
-        return send_file(output_path, as_attachment=True, mimetype='application/pdf', download_name='anonymized_document.pdf')
+        return send_file(output_path, as_attachment=True, mimetype='application/octet-stream', download_name=f"anonymized_{os.path.basename(uploaded_file.filename)}")
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
