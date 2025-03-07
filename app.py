@@ -15,7 +15,9 @@ swagger = Swagger(app, template_file="static/swagger.json", config={
     "specs": [{"endpoint": "apispec", "route": "/api-docs"}],
     "headers": [],
     "static_url_path": "/api-docs",
-    "specs_route": "/api-docs"
+    "specs_route": "/api-docs",
+    "multi_tenant": True,
+    "multi_user": True
 })
 
 # Initialize Presidio engines
@@ -33,7 +35,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\\\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\\\\\\\\\\\\\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
