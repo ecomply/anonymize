@@ -10,7 +10,23 @@ from flasgger import Swagger
 
 app = Flask(__name__)
 CORS(app)
-swagger = Swagger(app)
+swagger = Swagger(app, template={
+    "swagger": "2.0",
+    "info": {
+        "title": "Ecomply Anonymize API",
+        "description": "API for anonymizing sensitive information in documents.",
+        "version": "1.0.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "schemes": ["http"],
+    "tags": [
+        {
+            "name": "Anonymization",
+            "description": "Endpoints for document anonymization"
+        }
+    ]
+})
 
 # Initialize Presidio engines
 analyzer = AnalyzerEngine()
@@ -27,7 +43,7 @@ def extract_text_from_pdf(file_path):
 def extract_text_from_docx(file_path):
     """Extract text from a DOCX file."""
     doc = Document(file_path)
-    return "\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+    return "\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
 def anonymize_text(text):
     """Anonymize text using Presidio."""
@@ -111,4 +127,4 @@ def anonymize():
         os.remove(output_path)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
