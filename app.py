@@ -4,7 +4,7 @@ import docx
 from transformers import pipeline
 from presidio_analyzer import AnalyzerEngine
 from presidio_anonymizer import AnonymizerEngine
-import fasttext
+from langdetect import detect
 import os
 import tempfile
 
@@ -14,7 +14,6 @@ app = Flask(__name__)
 qa_pipeline = pipeline("question-answering")
 analyzer = AnalyzerEngine()
 anonymizer = AnonymizerEngine()
-language_model = fasttext.load_model("lid.176.bin")
 
 def extract_text_from_pdf(file_path):
     """Extract text from a PDF file."""
@@ -30,13 +29,14 @@ def extract_text_from_docx(file_path):
     def extract_text_from_docx(file_path):
         """Extract text from a DOCX file."""
         doc = docx.Document(file_path)
-        return "\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
+        return "\\\\\\\n".join([paragraph.text for paragraph in doc.paragraphs])
 
-def anonymize_text(text):
-    """Anonymize text using Presidio."""
-    results = analyzer.analyze(text=text, entities=[], language="en")
-    anonymized_text = anonymizer.anonymize(text=text, analyzer_results=results).text
-    return anonymized_text
+def detect_language(text):
+    """Detect language using langdetect."""
+    try:
+        return detect(text)
+    except Exception as e:
+        return "unknown"
 
 def anonymize_pdf(input_path, output_path):
     with fitz.open(input_path) as pdf:
